@@ -1,0 +1,235 @@
+# примеры API-запросов
+
+@baseUrl = http://127.0.0.1:8000/api/v1
+
+# регистрация пользователя
+POST {{baseUrl}}/user/register/
+Content-Type: application/json
+
+{
+    "surname": "Filippov",
+    "name": "Aleksander",
+    "patronymic": "Nicolaevich",
+    "email": "sash24.f@mail.ru",
+    "password": "Daiojkghrth86g",
+    "password_rep": "Daiojkghrth86g",
+    "company": "techconsur",
+    "position": "manager",
+    "type": "shop"
+}
+
+###
+
+# авторизация пользователей
+POST {{baseUrl}}/user/login/
+Content-Type: application/json
+
+{
+    "email": "sash24.f@mail.ru",
+    "password": "Daiojkghrth86g"
+}
+
+###
+
+# создание контакта пользователем
+POST {{baseUrl}}/user/contact/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+{
+    "type": "shop",
+    "value": "gto",
+    "city": "NN",
+    "street": "Kerchenskaya",
+    "phone": "89102362565"
+}
+
+###
+
+# удаление контакта пользователем
+DELETE  {{baseUrl}}/user/contact/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# просмотр контакта пользователем
+GET  {{baseUrl}}/user/contact/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# редактирование контакта пользователем
+PUT  {{baseUrl}}/user/contact/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+{
+    "type": "shop",
+    "value": "gto",
+    "city": "NN3",
+    "street": "Kerchenskaya",
+    "phone": "89102362565"
+}
+
+###
+
+# подтверждение почтового адреса пользователей
+POST {{baseUrl}}/user/register/confirm/
+Content-Type: application/json
+
+{
+    "email": "sashf.f@mail.ru",
+    "token": "5d4ad4646630935592b88d104a4e6095c32376a6"
+}
+
+###
+
+# обновление прайса магазином
+POST {{baseUrl}}/partner/update
+Content-Type: application/json
+Authorization: Token c21b5189457eaca79b0e4f7fb6720c7068e3cccc
+
+{
+    "url": "https://partner-site.ru/files/price.yaml"
+
+}
+
+###
+
+# создание магазина
+POST {{baseUrl}}/shop/
+Content-Type: application/json
+Authorization: Token fa094d85432a5838bb6741904e1178d179f4d69d
+
+{
+    "name": "eldorado",
+    "url": "https://www.eldorado.ru"
+}
+
+###
+
+# просмотр магазина
+GET {{baseUrl}}/shop/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# обновление статуса магазина
+PATCH {{baseUrl}}/shop/2/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+{
+    "state": "true"
+}
+
+###
+
+# получение статуса магазина (декоратор @action)
+GET {{baseUrl}}/shop/2/state/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# создание категории
+POST {{baseUrl}}/category/
+Content-Type: application/json
+Authorization: Token 77affd5bdd3180cd7c4e359a140b73a4ec797ce2
+
+{
+    "name": "electronocs"
+}
+
+###
+
+# создание продукта
+POST {{baseUrl}}/products/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+{
+    "name": "Samsung25545",
+    "shop": 2,
+    "category": 1,
+    "quantity": 2,
+    "price": 50,
+    "price_rrc": 55   
+}
+
+###
+
+# получение списка продуктов
+GET {{baseUrl}}/products/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+
+# поиск товаров в каталоге
+GET {{baseUrl}}/products/?category=2&shop=2
+Content-Type: application/json
+Authorization: Token cd3adbd33ebd4583018d95409d69c0b7b09dcd2b
+
+###
+
+# добавление заказа в корзину покупателем
+POST {{baseUrl}}/basket/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+{
+    "product_id": 3,
+    "shop_id": 1,
+    "quantity": 1
+}
+
+###
+
+# удаление заказа из корзины покупателем
+DELETE {{baseUrl}}/basket/1/
+Content-Type: application/json
+Authorization: Token db39cae66e1592abac34818b93ab416570307f11
+
+###
+
+# размещение заказа покупателем
+POST {{baseUrl}}/order/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# просмотр заказа покупателем/продавцом
+GET {{baseUrl}}/order/1/
+Content-Type: application/json
+Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+
+###
+
+# обновление статуса заказа магазином
+PATCH {{baseUrl}}/order/1/
+Content-Type: application/json
+Authorization: Token 1da01b9d0749fe388136f16757126cf4dd49af60
+
+{
+    "status": "sent"
+}
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
