@@ -146,7 +146,8 @@ class Basket(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='Количество')
     user = models.ForeignKey(User, verbose_name='Пользователь',
                              related_name='baskets', on_delete=models.CASCADE)
-    sum_prise_product = models.PositiveIntegerField(verbose_name='Суммарная стоимость позиции')
+    sum_price_product = models.PositiveIntegerField(verbose_name='Суммарная стоимость позиции')
+    shop_email = models.EmailField(_('email адрес магазина'), default='sash31.f@mail.ru')
 
     class Meta:
         verbose_name = 'Заказанная позиция'
@@ -191,7 +192,8 @@ class Order(models.Model):
     status = models.CharField(verbose_name='Статус', choices=STATE_CHOICES, default='new', max_length=15)
     quantity = models.PositiveIntegerField(verbose_name='Количество')
     contact = models.ForeignKey(Contact, verbose_name='Контакт', on_delete=models.CASCADE)
-    sum_prise_product = models.PositiveIntegerField(verbose_name='Суммарная стоимость позиции')
+    sum_price_product = models.PositiveIntegerField(verbose_name='Суммарная стоимость позиции')
+    shop_email = models.EmailField(_('email адрес магазина'), default='sash31.f@mail.ru')
 
     class Meta:
         verbose_name = 'Заказ'

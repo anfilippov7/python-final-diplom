@@ -3,21 +3,18 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import URLValidator
 from django.db import IntegrityError
 from django.db.models import Sum
-import yaml
 from rest_framework.decorators import action
-from yaml import load as load_yaml, Loader
-from requests import get
 from rest_framework import status
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.authtoken.models import Token
-from backend.models import Category, Product, Shop, ConfirmEmailToken, Order, Basket, Contact, ProductParameter
+from backend.models import Category, Product, Shop, ConfirmEmailToken, Order, Basket, Contact, ProductParameter, User
 from backend.serializers import RegistrationSerializer, CategorySerializer, ProductSerializer, ShopSerializer, \
     OrderSerializer, BasketSerializer, ContactSerializer, OrderItemSerializer
 from django.http import JsonResponse
-from backend.signals import new_user_registered, new_order
+from backend.tasks import send_email_task, shop_data_task
 
 
 class RegisterAccount(APIView):
@@ -51,7 +48,9 @@ class RegisterAccount(APIView):
                     user.set_password(request.data.get('password'))
                     user.save()
                     try:
-                        new_user_registered.send(sender=self.__class__, user_id=user.id)
+                        send_email_task.delay(
+                            email_address=self.request.data.get('email'), message='Your account is registered'
+                        )
                     except:
                         raise PermissionDenied({'Status': True, 'Errors': 'Error sending mail'})
                     return JsonResponse({'Status': True})
@@ -208,9 +207,11 @@ class BasketViewSet(ModelViewSet):
     serializer_class = BasketSerializer
 
     def perform_create(self, serializer):
+        order_shops = Shop.objects.values().filter(id=self.request.data.get('shop_id'))[0]
+        shop_email = User.objects.values().filter(id=order_shops.get('user_id'))[0].get('email')
         product_price = Product.objects.values().filter(id=self.request.data.get('product_id'))[0].get('price')
-        sum_prise_product = product_price*self.request.data.get('quantity')
-        serializer.save(user_id=self.request.user.id, sum_prise_product=sum_prise_product)
+        sum_price_product = product_price*self.request.data.get('quantity')
+        serializer.save(user_id=self.request.user.id, sum_price_product=sum_price_product, shop_email=shop_email)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -221,13 +222,17 @@ class BasketViewSet(ModelViewSet):
             if shop_state:
                 quantity_product = Product.objects.values().filter(id=self.request.data.get('product_id'))[0].get(
                     'quantity')
-                if quantity_product >= self.request.data.get('quantity'):
+                shop_product = Product.objects.values().filter(id=self.request.data.get('product_id'))[0].get(
+                    'shop_id')
+                if quantity_product >= self.request.data.get('quantity') \
+                        and shop_product == self.request.data.get('shop_id'):
                     try:
                         self.perform_create(serializer)
                     except:
                         raise PermissionDenied('This product is already in the cart')
                 else:
-                    raise PermissionDenied('Insufficient quantity of goods in stock, reduce the quantity of goods')
+                    raise PermissionDenied("Error: Insufficient quantity of goods in stock, reduce the quantity of "
+                                           "goods, or you don't have this product in the specified store")
             else:
                 raise PermissionDenied('Shop state not True')
         else:
@@ -249,17 +254,33 @@ class OrderViewSet(ModelViewSet):
         if request.user.is_authenticated and request.user.type == 'buyer':
             basket_user = Basket.objects.values().filter(user_id=self.request.user.id)
             contact = Contact.objects.values().filter(user_id=self.request.user.id)
+            number_orders = []
             if basket_user and contact:
                 for item in basket_user:
                     serializer = self.get_serializer(data=request.data)
                     serializer.is_valid(raise_exception=True)
-                    serializer.save(user_id=self.request.user.id,
+                    instance = serializer.save(user_id=self.request.user.id,
                                     quantity=item.get('quantity'),
                                     contact_id=contact[0].get('id'),
                                     product_id=item.get('product_id'),
                                     shop_id=item.get('shop_id'),
-                                    sum_prise_product=item.get('sum_prise_product')
+                                    sum_price_product=item.get('sum_price_product'),
+                                    shop_email=item.get('shop_email')
                                     )
+                    number_orders.append(instance.id)
+                # Отправляем почту продавцу
+                shop_order = Basket.objects.values().filter(user_id=self.request.user.id).distinct('shop_email')
+                orders_shops =[]
+                for shop_email in shop_order:
+                    shop_email = shop_email.get('shop_email')
+                    orders_id = Order.objects.values().filter(pk__in=number_orders).filter(shop_email=shop_email)
+                    for order_id in orders_id:
+                        orders_shops.append(order_id.get('id'))
+                    send_email_task.delay(
+                        email_address=shop_email, message=f'Your product is ordered, number ordered is {orders_shops}'
+                    )
+                    orders_shops.clear()
+                # Уменьшаем количество товара в каталоге на количество заказанного товара и удаляем из корзины
                 order_product = Basket.objects.values().filter(user_id=self.request.user.id)
                 for order in order_product:
                     products = Product.objects.values().filter(id=order.get('product_id'))
@@ -267,6 +288,11 @@ class OrderViewSet(ModelViewSet):
                         difference = product.get('quantity') - order.get('quantity')
                         Product.objects.values().filter(id=order.get('product_id')).update(quantity=difference)
                 Basket.objects.filter(user_id=self.request.user.id).delete()
+
+                # Отправляем почту покупателю
+                send_email_task.delay(
+                    email_address=self.request.user.email, message=f'Your order number {number_orders} is registered'
+                )
             else:
                 raise PermissionDenied('The basket is empty or not contact user')
         else:
@@ -300,7 +326,8 @@ class OrderViewSet(ModelViewSet):
                     .get('shop_id')
                 if shop_id == order_shop_id:
                     serializer.save(status=self.request.data.get('status'))
-                    new_order.send(sender=self.__class__, user_id=request.user.id)
+
+                    # new_order.send(sender=self.__class__, user_id=request.user.id)
                     return Response(status=status.HTTP_200_OK)
                 else:
                     raise PermissionDenied('The order is not for your store')
@@ -335,13 +362,8 @@ class PartnerUpdate(APIView):
             except ValidationError as e:
                 return JsonResponse({'Status': False, 'Error': str(e)})
             else:
-                try:
-                    stream = get(url).content
-                    data = load_yaml(stream, Loader=Loader)
-                except:
-                    with open('./data/shop1.yaml') as data_shop:
-                        data = yaml.load(data_shop, Loader=yaml.FullLoader)
-                return data
+                data = shop_data_task(url)
+            return data
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -349,21 +371,6 @@ class PartnerUpdate(APIView):
 
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Only for stores'}, status=403)
-        # url = request.data.get('url')
-        # print(url)
-        # if url:
-        #     validate_url = URLValidator()
-        #     try:
-        #         validate_url(url)
-        #     except ValidationError as e:
-        #         return JsonResponse({'Status': False, 'Error': str(e)})
-        #     else:
-        #         stream = get(url).content
-        #         data = load_yaml(stream, Loader=Loader)
-
-        # with open('shop.yaml') as data_shop:
-        #     data = yaml.load(data_shop, Loader=yaml.FullLoader)
-
         data = self.shop_data_post(request, *args, **kwargs)
         shop, _ = Shop.objects.get_or_create(name=data.get('shop'), user_id=request.user.id)
         try:
@@ -387,7 +394,7 @@ class PartnerUpdate(APIView):
             raise PermissionDenied(error)
         return JsonResponse({'Status': True})
 
-        # return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
 
 
 class ContactView(APIView):
