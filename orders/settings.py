@@ -25,7 +25,7 @@ SECRET_KEY = 't%@#-)@6h$yt^+(811ij%=v!_578)=z^%vx)wxx_!t6ar=1rhj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
 
 
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'backend',
-    'django_rest_passwordreset'
+    'django_rest_passwordreset',
+
 ]
 
 MIDDLEWARE = [
@@ -168,9 +169,13 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ]
+
+
 
 }
 
@@ -192,3 +197,4 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+

@@ -249,6 +249,7 @@ class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    # размещение заказа покупателем
     def create(self, request, *args, **kwargs):
         global serializer
         if request.user.is_authenticated and request.user.type == 'buyer':
@@ -301,22 +302,24 @@ class OrderViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    # просмотр списка заказов покупателем/продавцом
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.type == 'buyer':
             order = Order.objects.filter(user_id=self.request.user.id)
             order_sum = Order.objects.filter(user_id=self.request.user.id).aggregate(
-                total_sum_order=Sum('sum_prise_product'))
+                total_sum_order=Sum('sum_price_product'))
             serializer = OrderSerializer(order, many=True)
             return Response({'Total_sum_order': order_sum.get("total_sum_order"), 'orders': serializer.data},
                             status=status.HTTP_200_OK)
         elif request.user.is_authenticated and request.user.type == 'shop':
             order = Order.objects.filter(shop_id=self.request.user.id)
             order_sum = Order.objects.filter(user_id=self.request.user.id).aggregate(
-                total_sum_order=Sum('sum_prise_product'))
+                total_sum_order=Sum('sum_price_product'))
             serializer = OrderSerializer(order, many=True)
             return Response({'Total_sum_order': order_sum.get("total_sum_order"), 'orders': serializer.data},
                             status=status.HTTP_200_OK)
 
+    # обновление статуса заказа магазином
     def perform_update(self, serializer):
         request = self.request
         if request.user.is_authenticated and request.user.type == 'shop':
@@ -336,6 +339,7 @@ class OrderViewSet(ModelViewSet):
         else:
             raise PermissionDenied("You don't have the rights to edit the order")
 
+    # просмотр заказа покупателем/продавцом
     def retrieve(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.type == 'buyer':
             order = Order.objects.filter(user_id=self.request.user.id).\
