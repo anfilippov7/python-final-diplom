@@ -3,7 +3,7 @@ from django_rest_passwordreset.views import reset_password_request_token, reset_
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 
-# from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from backend.views import RegisterAccount, ConfirmAccount, LoginAccount, CategoryViewSet, ProductViewSet, ShopViewSet, \
     OrderViewSet, BasketViewSet, PartnerUpdate, ContactView
@@ -11,7 +11,6 @@ from backend.views import RegisterAccount, ConfirmAccount, LoginAccount, Categor
 r = DefaultRouter()
 r.register('category', CategoryViewSet)
 r.register('shop', ShopViewSet)
-r.register('products', ProductViewSet)
 r.register('products', ProductViewSet)
 r.register('order', OrderViewSet)
 r.register('basket', BasketViewSet)
@@ -28,10 +27,10 @@ urlpatterns = [
     path('user/password_reset', reset_password_request_token, name='password-reset'),
     path('user/password_reset/confirm', reset_password_confirm, name='password-reset-confirm'),
 
-    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # # Optional UI:
-    # path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('accounts/', include('allauth.urls')),
 ] + r.urls

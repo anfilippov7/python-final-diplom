@@ -172,10 +172,10 @@ class AccountTests(APITestCase):
     #     Create product ().
     #     """
     #     token = Token.objects.get(user__id=6)
-    #     url = 'http://127.0.0.1:8000/api/v1/products/'
-    #     print(token)
+    #     url = 'http://127.0.0.1:8000/api/v1/products/write/'
     #     data = {
-    #         "name": "Samsung25545",
+    #         "model": "Samsung25545",
+    #         "name": "Phone",
     #         "shop": 2,
     #         "category": 2,
     #         "quantity": 2,

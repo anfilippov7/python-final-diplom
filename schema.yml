@@ -919,13 +919,29 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
     post:
       operationId: user_contact_create
       description: Класс для работы с контактами покупателей (в принципе рабочий,
         можно переписать)
       tags:
       - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Contact'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Contact'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -933,13 +949,29 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
     put:
       operationId: user_contact_update
       description: Класс для работы с контактами покупателей (в принципе рабочий,
         можно переписать)
       tags:
       - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Contact'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Contact'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -947,7 +979,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
     delete:
       operationId: user_contact_destroy
       description: Класс для работы с контактами покупателей (в принципе рабочий,
@@ -1036,6 +1072,18 @@ paths:
       description: Для регистрации покупателей
       tags:
       - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Registration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Registration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Registration'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -1043,7 +1091,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+          description: ''
   /api/v1/user/register/confirm/:
     post:
       operationId: user_register_confirm_create
@@ -1103,6 +1155,45 @@ components:
           maxLength: 80
       required:
       - name
+    Contact:
+      type: object
+      properties:
+        city:
+          type: string
+          title: Город
+          maxLength: 50
+        street:
+          type: string
+          title: Улица
+          maxLength: 100
+        house:
+          type: string
+          title: Дом
+          maxLength: 15
+        structure:
+          type: string
+          title: Корпус
+          maxLength: 15
+        building:
+          type: string
+          title: Строение
+          maxLength: 15
+        apartment:
+          type: string
+          title: Квартира
+          maxLength: 15
+        user:
+          type: integer
+          writeOnly: true
+          title: Пользователь
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+      required:
+      - city
+      - phone
+      - street
     Email:
       type: object
       properties:
@@ -1403,6 +1494,62 @@ components:
       - name
       - parameter
       - value
+    Registration:
+      type: object
+      properties:
+        surname:
+          type: string
+          title: Фамилия
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        name:
+          type: string
+          title: Имя
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        patronymic:
+          type: string
+          title: Отчество
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          title: Email адрес
+          maxLength: 254
+        password:
+          type: string
+          title: Пароль
+          maxLength: 100
+        password_rep:
+          type: string
+          title: Пароль (повтор)
+          maxLength: 100
+        company:
+          type: string
+          title: Компания
+          maxLength: 50
+        position:
+          type: string
+          title: Должность
+          maxLength: 50
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          title: Тип пользователя
+      required:
+      - email
+      - name
+      - password
+      - password_rep
+      - patronymic
+      - surname
     Shop:
       type: object
       properties:
@@ -1448,6 +1595,14 @@ components:
         * `sent` - Отправлен
         * `delivered` - Доставлен
         * `canceled` - Отменен
+    TypeEnum:
+      enum:
+      - shop
+      - buyer
+      type: string
+      description: |-
+        * `shop` - Магазин
+        * `buyer` - Покупатель
   securitySchemes:
     basicAuth:
       type: http

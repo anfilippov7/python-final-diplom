@@ -18,74 +18,73 @@ from backend.tasks import send_email_task, shop_data_task
 
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
-# from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
-# from drf_spectacular.types import OpenApiTypes
-#
-#
-# class AlbumViewset(viewset.ModelViewset):
-#     serializer_class = AlbumSerializer
-#
-#     @extend_schema(
-#         request=AlbumCreationSerializer,
-#         responses={201: AlbumSerializer},
-#     )
-#     def create(self, request):
-#         # your non-standard behaviour
-#         return super().create(request)
-#
-#     @extend_schema(
-#         # extra parameters added to the schema
-#         parameters=[
-#             OpenApiParameter(name='artist', description='Filter by artist', required=False, type=str),
-#             OpenApiParameter(
-#                 name='release',
-#                 type=OpenApiTypes.DATE,
-#                 location=OpenApiParameter.QUERY,
-#                 description='Filter by release date',
-#                 examples=[
-#                     OpenApiExample(
-#                         'Example 1',
-#                         summary='short optional summary',
-#                         description='longer description',
-#                         value='1993-08-23'
-#                     ),
-#                     ...
-#                 ],
-#             ),
-#         ],
-#         # override default docstring extraction
-#         description='More descriptive text',
-#         # provide Authentication class that deviates from the views default
-#         auth=None,
-#         # change the auto-generated operation name
-#         operation_id=None,
-#         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
-#         operation=None,
-#         # attach request/response examples to the operation.
-#         examples=[
-#             OpenApiExample(
-#                 'Example 1',
-#                 description='longer description',
-#                 value=...
-#             ),
-#             ...
-#         ],
-#     )
-#     def list(self, request):
-#         # your non-standard behaviour
-#         return super().list(request)
-#
-#     @extend_schema(
-#         request=AlbumLikeSerializer,
-#         responses={204: None},
-#         methods=["POST"]
-#     )
-#     @extend_schema(description='Override a specific method', methods=["GET"])
-#     @action(detail=True, methods=['post', 'get'])
-#     def set_password(self, request, pk=None):
-#         # your action behaviour
-#         ...
+
+class RegistrationViewset(ModelViewSet):
+    serializer_class = RegistrationSerializer
+
+    @extend_schema(
+        request=RegistrationSerializer,
+        responses={201: RegistrationSerializer},
+    )
+    def create(self, request):
+        # your non-standard behaviour
+        return super().create(request)
+
+    @extend_schema(
+        # extra parameters added to the schema
+        parameters=[
+            OpenApiParameter(name='user', description='Filter by user', required=False, type=str),
+            OpenApiParameter(
+                name='Aleksander',
+                type=OpenApiTypes.DATE,
+                location=OpenApiParameter.QUERY,
+                description='Filter by create date',
+                examples=[
+                    OpenApiExample(
+                        'Example 1',
+                        summary='short optional summary',
+                        description='longer description',
+                        value='2023-05-01'
+                    ),
+                    ...
+                ],
+            ),
+        ],
+        # override default docstring extraction
+        description='More descriptive text',
+        # provide Authentication class that deviates from the views default
+        auth=None,
+        # change the auto-generated operation name
+        operation_id=None,
+        # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
+        operation=None,
+        # attach request/response examples to the operation.
+        examples=[
+            OpenApiExample(
+                'Example 1',
+                description='longer description',
+                value=...
+            ),
+            ...
+        ],
+    )
+    def list(self, request):
+        # your non-standard behaviour
+        return super().list(request)
+
+    @extend_schema(
+        request=RegistrationSerializer,
+        responses={204: None},
+        methods=["POST"]
+    )
+    @extend_schema(description='Override a specific method', methods=["GET"])
+    @action(detail=True, methods=['post', 'get'])
+    def set_password(self, request, pk=None):
+        # your action behaviour
+        ...
 
 
 class RegisterAccount(APIView):
@@ -93,7 +92,7 @@ class RegisterAccount(APIView):
     Для регистрации покупателей
     """
     throttle_classes = [AnonRateThrottle]
-
+    serializer_class = RegistrationSerializer
     # Регистрация методом POST
     def post(self, request, *args, **kwargs):
 
@@ -161,8 +160,9 @@ class AccountDetails(APIView):
     Класс для работы данными пользователя
     """
     throttle_classes = [UserRateThrottle]
-
+    serializer_class = RegistrationSerializer
     # получить данные
+
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
@@ -272,6 +272,25 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filterset_fields = ['category', 'shop']
+
+    @action(methods=['POST'], detail=False, throttle_classes=[UserRateThrottle])
+    def write(self, request, *args, **kwargs):
+        category = Category.objects.filter(pk=request.data.get('category'))
+        shop = Shop.objects.filter(pk=request.data.get('shop'))
+        name = Product.objects.filter(name=request.data.get('name'))
+        if category and shop and not name:
+            Product.objects.create(
+                model=request.data.get('model'),
+                name=request.data.get('name'),
+                quantity=request.data.get('quantity'),
+                price=request.data.get('price'),
+                price_rrc=request.data.get('price_rrc'),
+                category_id=request.data.get('category'),
+                shop_id=request.data.get('shop'),
+                                   )
+            return Response({'Status': "OK"})
+        else:
+            return JsonResponse({'Status': False, 'Errors': 'incorrect data was transmitted'})
 
 
 class BasketViewSet(ModelViewSet):
@@ -432,6 +451,7 @@ class PartnerUpdate(APIView):
     """
     Класс для обновления прайса от поставщика
     """
+    serializer_class = ProductSerializer
     def shop_data_post(self, request, *args, **kwargs):
         url = request.data.get('url')
         if url:
@@ -474,14 +494,13 @@ class PartnerUpdate(APIView):
         return JsonResponse({'Status': True})
 
 
-
-
 class ContactView(APIView):
     """
     Класс для работы с контактами покупателей (в принципе рабочий, можно переписать)
     """
-
+    serializer_class = ContactSerializer
     # получить мои контакты
+
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)

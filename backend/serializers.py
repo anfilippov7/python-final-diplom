@@ -50,7 +50,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'shop', 'category', 'quantity', 'price', 'price_rrc', 'parameter')
+        fields = ('model', 'name', 'shop', 'category', 'quantity', 'price', 'price_rrc', 'parameter')
         read_only_fields = ('id',)
 
 
@@ -69,7 +69,6 @@ class BasketSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Order
         fields = ('id', 'dt', 'status')
@@ -82,7 +81,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('sum_price_product', 'dt', 'status', 'product', 'contact', )
+        fields = ('sum_price_product', 'dt', 'status', 'product', 'contact',)
         read_only_fields = ('id',)
         extra_kwargs = {
             'order': {'write_only': True}

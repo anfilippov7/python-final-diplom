@@ -121,7 +121,7 @@ class Shop(models.Model):
         ordering = ('-name',)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.id}'
 
 
 class Category(models.Model):

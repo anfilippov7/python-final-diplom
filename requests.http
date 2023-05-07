@@ -10,7 +10,7 @@ Content-Type: application/json
     "surname": "Filippov",
     "name": "Aleksander",
     "patronymic": "Nicolaevich",
-    "email": "sash24.f@mail.ru",
+    "email": "sash5.f@mail.ru",
     "password": "Daiojkghrth86g",
     "password_rep": "Daiojkghrth86g",
     "company": "techconsur",
@@ -25,7 +25,7 @@ POST {{baseUrl}}/user/login/
 Content-Type: application/json
 
 {
-    "email": "sash24.f@mail.ru",
+    "email": "sash5.f@mail.ru",
     "password": "Daiojkghrth86g"
 }
 
@@ -34,10 +34,10 @@ Content-Type: application/json
 # создание контакта пользователем
 POST {{baseUrl}}/user/contact/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 897cb3ca10acb3965e96cd69792c1a027356c0fb
 
 {
-    "type": "shop",
+    "type": "buyer",
     "value": "gto",
     "city": "NN",
     "street": "Kerchenskaya",
@@ -63,10 +63,10 @@ Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
 # редактирование контакта пользователем
 PUT  {{baseUrl}}/user/contact/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 897cb3ca10acb3965e96cd69792c1a027356c0fb
 
 {
-    "type": "shop",
+    "type": "buyer",
     "value": "gto",
     "city": "NN3",
     "street": "Kerchenskaya",
@@ -87,9 +87,9 @@ Content-Type: application/json
 ###
 
 # обновление прайса магазином
-POST {{baseUrl}}/partner/update
+POST {{baseUrl}}/partner/update/
 Content-Type: application/json
-Authorization: Token c21b5189457eaca79b0e4f7fb6720c7068e3cccc
+Authorization: Token 897cb3ca10acb3965e96cd69792c1a027356c0fb
 
 {
     "url": "https://partner-site.ru/files/price.yaml"
@@ -101,10 +101,10 @@ Authorization: Token c21b5189457eaca79b0e4f7fb6720c7068e3cccc
 # создание магазина
 POST {{baseUrl}}/shop/
 Content-Type: application/json
-Authorization: Token fa094d85432a5838bb6741904e1178d179f4d69d
+Authorization: Token abf62632a0533e390c52204674b2d2aec7ff1fab
 
 {
-    "name": "eldorado",
+    "name": "eldorado2",
     "url": "https://www.eldorado.ru"
 }
 
@@ -113,7 +113,7 @@ Authorization: Token fa094d85432a5838bb6741904e1178d179f4d69d
 # просмотр магазина
 GET {{baseUrl}}/shop/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 897cb3ca10acb3965e96cd69792c1a027356c0fb
 
 ###
 
@@ -138,7 +138,7 @@ Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
 # создание категории
 POST {{baseUrl}}/category/
 Content-Type: application/json
-Authorization: Token 77affd5bdd3180cd7c4e359a140b73a4ec797ce2
+Authorization: Token 927efadd48c5277550ebf198233fba9b7a2b9834
 
 {
     "name": "electronocs"
@@ -146,14 +146,15 @@ Authorization: Token 77affd5bdd3180cd7c4e359a140b73a4ec797ce2
 
 ###
 
-# создание продукта
-POST {{baseUrl}}/products/
+# создание продукта (декоратор @action)
+POST {{baseUrl}}/products/write/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token abf62632a0533e390c52204674b2d2aec7ff1fab
 
 {
-    "name": "Samsung25545",
-    "shop": 2,
+    "model": "Samsung25545",
+    "name": "Phone",
+    "shop": 1,
     "category": 1,
     "quantity": 2,
     "price": 50,
@@ -165,56 +166,64 @@ Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
 # получение списка продуктов
 GET {{baseUrl}}/products/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token abf62632a0533e390c52204674b2d2aec7ff1fab
 
 ###
 
 
 # поиск товаров в каталоге
-GET {{baseUrl}}/products/?category=2&shop=2
+GET {{baseUrl}}/products/?category=224&shop=2
 Content-Type: application/json
-Authorization: Token cd3adbd33ebd4583018d95409d69c0b7b09dcd2b
+Authorization: Token abf62632a0533e390c52204674b2d2aec7ff1fab
 
 ###
 
 # добавление заказа в корзину покупателем
 POST {{baseUrl}}/basket/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 0d76c67d9530e179210835cb4095dc90a78d4836
 
 {
-    "product_id": 3,
+    "product_id": 1,
     "shop_id": 1,
-    "quantity": 1
+    "quantity": 0
 }
 
 ###
 
 # удаление заказа из корзины покупателем
-DELETE {{baseUrl}}/basket/1/
+DELETE {{baseUrl}}/basket/2/
 Content-Type: application/json
-Authorization: Token db39cae66e1592abac34818b93ab416570307f11
+Authorization: Token 840b17b99bc625d029a5ce157d54c4db9c943849
 
 ###
 
 # размещение заказа покупателем
 POST {{baseUrl}}/order/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 0d76c67d9530e179210835cb4095dc90a78d4836
 
 ###
 
 # просмотр заказа покупателем/продавцом
-GET {{baseUrl}}/order/1/
+GET {{baseUrl}}/order/4/
 Content-Type: application/json
-Authorization: Token 5d4ad4646630935592b88d104a4e6095c32376a6
+Authorization: Token 0d76c67d9530e179210835cb4095dc90a78d4836
 
 ###
 
-# обновление статуса заказа магазином
-PATCH {{baseUrl}}/order/1/
+# просмотр списка заказов покупателем/продавцом
+GET {{baseUrl}}/order/
 Content-Type: application/json
-Authorization: Token 1da01b9d0749fe388136f16757126cf4dd49af60
+Authorization: Token 0d76c67d9530e179210835cb4095dc90a78d4836
+
+###
+
+
+# обновление статуса заказа магазином
+PATCH {{baseUrl}}/order/4/
+Content-Type: application/json
+Authorization: Token b893b9988e9c248c024d9a5ce42acbef12efa70f
 
 {
     "status": "sent"
