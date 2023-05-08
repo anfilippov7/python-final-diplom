@@ -18,6 +18,8 @@ from backend.tasks import send_email_task, shop_data_task
 
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
+from silk.profiling.profiler import silk_profile
+
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
@@ -94,6 +96,7 @@ class RegisterAccount(APIView):
     throttle_classes = [AnonRateThrottle]
     serializer_class = RegistrationSerializer
     # Регистрация методом POST
+
     def post(self, request, *args, **kwargs):
 
         # проверяем обязательные аргументы

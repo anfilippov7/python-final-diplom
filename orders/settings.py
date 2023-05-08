@@ -55,6 +55,8 @@ INSTALLED_APPS = [
 
     'allauth.socialaccount.providers.vk',
     'allauth.socialaccount.providers.yandex',
+
+    'silk',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'orders.urls'
@@ -258,3 +262,5 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+
