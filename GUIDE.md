@@ -26,3 +26,12 @@
 - DRF тротлинг
 
 - добавлена возможность авторизации из VK и yandex
+
+
+## 21.05.2023 drf-spectacular
+
+
+для запуска drf-spectacular необходимо выполнить две команды:
+
+- python3 manage.py spectacular --color --file schema.yml
+- sudo docker run -p 80:8080 -e SWAGGER_JSON=/schema.yml -v ${PWD}/schema.yml:/schema.yml swaggerapi/swagger-ui

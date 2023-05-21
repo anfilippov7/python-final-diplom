@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Your Project API
+  title: backend API
   version: 1.0.0
-  description: Your project description
+  description: backend API
 paths:
   /api/v1/basket/:
     get:
@@ -38,13 +38,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
         required: true
       security:
       - cookieAuth: []
@@ -99,13 +99,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Basket'
+              $ref: '#/components/schemas/BasketRequest'
         required: true
       security:
       - cookieAuth: []
@@ -135,13 +135,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedBasket'
+              $ref: '#/components/schemas/PatchedBasketRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedBasket'
+              $ref: '#/components/schemas/PatchedBasketRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedBasket'
+              $ref: '#/components/schemas/PatchedBasketRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -208,13 +208,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
         required: true
       security:
       - cookieAuth: []
@@ -269,13 +269,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/CategoryRequest'
         required: true
       security:
       - cookieAuth: []
@@ -305,13 +305,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCategory'
+              $ref: '#/components/schemas/PatchedCategoryRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCategory'
+              $ref: '#/components/schemas/PatchedCategoryRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCategory'
+              $ref: '#/components/schemas/PatchedCategoryRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -380,13 +380,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -442,13 +442,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -478,13 +478,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedOrder'
+              $ref: '#/components/schemas/PatchedOrderRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedOrder'
+              $ref: '#/components/schemas/PatchedOrderRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedOrder'
+              $ref: '#/components/schemas/PatchedOrderRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -524,6 +524,18 @@ paths:
       description: Класс для обновления прайса от поставщика
       tags:
       - partner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -531,7 +543,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
   /api/v1/products/:
     get:
       operationId: products_list
@@ -574,13 +590,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
         required: true
       security:
       - cookieAuth: []
@@ -635,13 +651,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
         required: true
       security:
       - cookieAuth: []
@@ -671,13 +687,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedProduct'
+              $ref: '#/components/schemas/PatchedProductRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedProduct'
+              $ref: '#/components/schemas/PatchedProductRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedProduct'
+              $ref: '#/components/schemas/PatchedProductRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -710,6 +726,36 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/products/write/:
+    post:
+      operationId: products_write_create
+      description: Класс для просмотра и создания списка продуктов
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
   /api/v1/shop/:
     get:
       operationId: shop_list
@@ -744,13 +790,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
         required: true
       security:
       - cookieAuth: []
@@ -805,13 +851,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Shop'
+              $ref: '#/components/schemas/ShopRequest'
         required: true
       security:
       - cookieAuth: []
@@ -841,13 +887,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedShop'
+              $ref: '#/components/schemas/PatchedShopRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedShop'
+              $ref: '#/components/schemas/PatchedShopRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedShop'
+              $ref: '#/components/schemas/PatchedShopRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -934,13 +980,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
         required: true
       security:
       - cookieAuth: []
@@ -964,13 +1010,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
         required: true
       security:
       - cookieAuth: []
@@ -1025,13 +1071,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Email'
+              $ref: '#/components/schemas/EmailRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Email'
+              $ref: '#/components/schemas/EmailRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Email'
+              $ref: '#/components/schemas/EmailRequest'
         required: true
       responses:
         '200':
@@ -1051,13 +1097,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PasswordToken'
+              $ref: '#/components/schemas/PasswordTokenRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PasswordToken'
+              $ref: '#/components/schemas/PasswordTokenRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PasswordToken'
+              $ref: '#/components/schemas/PasswordTokenRequest'
         required: true
       responses:
         '200':
@@ -1076,13 +1122,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
         required: true
       security:
       - cookieAuth: []
@@ -1131,6 +1177,19 @@ components:
           maximum: 2147483647
           minimum: 0
           title: Количество
+      required:
+      - id
+      - product
+      - quantity
+      - shop
+    BasketRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Количество
         shop_id:
           type: integer
           writeOnly: true
@@ -1140,17 +1199,24 @@ components:
           writeOnly: true
           title: Выбор продуктов для заказа
       required:
-      - id
-      - product
       - product_id
       - quantity
-      - shop
       - shop_id
     Category:
       type: object
       properties:
         name:
           type: string
+          title: Название
+          maxLength: 80
+      required:
+      - name
+    CategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
           title: Название
           maxLength: 80
       required:
@@ -1182,12 +1248,50 @@ components:
           type: string
           title: Квартира
           maxLength: 15
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+      required:
+      - city
+      - phone
+      - street
+    ContactRequest:
+      type: object
+      properties:
+        city:
+          type: string
+          minLength: 1
+          title: Город
+          maxLength: 50
+        street:
+          type: string
+          minLength: 1
+          title: Улица
+          maxLength: 100
+        house:
+          type: string
+          title: Дом
+          maxLength: 15
+        structure:
+          type: string
+          title: Корпус
+          maxLength: 15
+        building:
+          type: string
+          title: Строение
+          maxLength: 15
+        apartment:
+          type: string
+          title: Квартира
+          maxLength: 15
         user:
           type: integer
           writeOnly: true
           title: Пользователь
         phone:
           type: string
+          minLength: 1
           title: Телефон
           maxLength: 20
       required:
@@ -1200,6 +1304,15 @@ components:
         email:
           type: string
           format: email
+      required:
+      - email
+    EmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
       required:
       - email
     Order:
@@ -1219,6 +1332,13 @@ components:
       required:
       - dt
       - id
+    OrderRequest:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
     PaginatedBasketList:
       type: object
       properties:
@@ -1329,20 +1449,21 @@ components:
       required:
       - password
       - token
-    PatchedBasket:
+    PasswordTokenRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        product:
-          allOf:
-          - $ref: '#/components/schemas/Product'
-          readOnly: true
-        shop:
-          allOf:
-          - $ref: '#/components/schemas/Shop'
-          readOnly: true
+        password:
+          type: string
+          minLength: 1
+        token:
+          type: string
+          minLength: 1
+      required:
+      - password
+      - token
+    PatchedBasketRequest:
+      type: object
+      properties:
         quantity:
           type: integer
           maximum: 2147483647
@@ -1356,40 +1477,33 @@ components:
           type: integer
           writeOnly: true
           title: Выбор продуктов для заказа
-    PatchedCategory:
+    PatchedCategoryRequest:
       type: object
       properties:
         name:
           type: string
+          minLength: 1
           title: Название
           maxLength: 80
-    PatchedOrder:
+    PatchedOrderRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        dt:
-          type: string
-          format: date-time
-          readOnly: true
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
           title: Статус
-    PatchedProduct:
+    PatchedProductRequest:
       type: object
       properties:
+        model:
+          type: string
+          title: Модель
+          maxLength: 80
         name:
           type: string
+          minLength: 1
           title: Название продукта
           maxLength: 80
-        shop:
-          type: string
-          readOnly: true
-        category:
-          type: string
-          readOnly: true
         quantity:
           type: integer
           maximum: 2147483647
@@ -1405,16 +1519,12 @@ components:
           maximum: 2147483647
           minimum: 0
           title: Рекомендуемая розничная цена
-        parameter:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductParameter'
-          readOnly: true
-    PatchedShop:
+    PatchedShopRequest:
       type: object
       properties:
         name:
           type: string
+          minLength: 1
           title: Название
           maxLength: 50
         url:
@@ -1438,6 +1548,10 @@ components:
     Product:
       type: object
       properties:
+        model:
+          type: string
+          title: Модель
+          maxLength: 80
         name:
           type: string
           title: Название продукта
@@ -1494,6 +1608,54 @@ components:
       - name
       - parameter
       - value
+    ProductParameterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Название
+          maxLength: 40
+        value:
+          type: string
+          minLength: 1
+          title: Значение
+          maxLength: 100
+      required:
+      - name
+      - value
+    ProductRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          title: Модель
+          maxLength: 80
+        name:
+          type: string
+          minLength: 1
+          title: Название продукта
+          maxLength: 80
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Количество
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Цена
+        price_rrc:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Рекомендуемая розничная цена
+      required:
+      - name
+      - price
+      - price_rrc
+      - quantity
     Registration:
       type: object
       properties:
@@ -1550,11 +1712,101 @@ components:
       - password_rep
       - patronymic
       - surname
+    RegistrationRequest:
+      type: object
+      properties:
+        surname:
+          type: string
+          minLength: 1
+          title: Фамилия
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        name:
+          type: string
+          minLength: 1
+          title: Имя
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        patronymic:
+          type: string
+          minLength: 1
+          title: Отчество
+          description: Required. 50 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          minLength: 1
+          title: Email адрес
+          maxLength: 254
+        password:
+          type: string
+          minLength: 1
+          title: Пароль
+          maxLength: 100
+        password_rep:
+          type: string
+          minLength: 1
+          title: Пароль (повтор)
+          maxLength: 100
+        company:
+          type: string
+          title: Компания
+          maxLength: 50
+        position:
+          type: string
+          title: Должность
+          maxLength: 50
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          title: Тип пользователя
+      required:
+      - email
+      - name
+      - password
+      - password_rep
+      - patronymic
+      - surname
     Shop:
       type: object
       properties:
         name:
           type: string
+          title: Название
+          maxLength: 50
+        url:
+          type: string
+          format: uri
+          nullable: true
+          title: Ссылка
+          maxLength: 200
+        state:
+          type: boolean
+          title: Статус работы магазина
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        user:
+          type: integer
+          nullable: true
+          title: Пользователь
+      required:
+      - name
+    ShopRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
           title: Название
           maxLength: 50
         url:

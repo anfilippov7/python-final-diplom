@@ -7,6 +7,7 @@ from yaml import load as load_yaml, Loader
 from requests import get
 import yaml
 
+
 @shared_task()
 def send_email_task(email_address, message):
     """Sends an email"""
@@ -29,5 +30,3 @@ def shop_data_task(url):
         with open('./data/shop1.yaml') as data_shop:
             data = yaml.load(data_shop, Loader=yaml.FullLoader)
     return data
-
-
