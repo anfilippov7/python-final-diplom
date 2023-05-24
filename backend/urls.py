@@ -3,7 +3,7 @@ from django_rest_passwordreset.views import reset_password_request_token, reset_
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
 
 from backend.views import RegisterAccount, ConfirmAccount, LoginAccount, CategoryViewSet, ProductViewSet, ShopViewSet, \
     OrderViewSet, BasketViewSet, PartnerUpdate, ContactView
@@ -27,10 +27,7 @@ urlpatterns = [
     path('user/password_reset', reset_password_request_token, name='password-reset'),
     path('user/password_reset/confirm', reset_password_confirm, name='password-reset-confirm'),
 
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Optional UI:
-    path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
 
     path('accounts/', include('allauth.urls')),
 
